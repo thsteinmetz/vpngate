@@ -63,9 +63,10 @@ function connectVPN($connection)
 
     // Sleep a few seconds and compare current IP to the one from the VPN server
     sleep(15);
-    exec('curl icanhazip.com', $result);
+    $ip = file_get_contents('http://icanhazip.com');
 
-    if ($result[0] != $connection[1]) {
+
+    if ($ip != $connection[1]) {
         echo "VPN did not connect to ' . $connection[6] . ' - ' . $connection[1] . ', moving to the next one..." . PHP_EOL;
         killVpn();
     } else {
