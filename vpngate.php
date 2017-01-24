@@ -56,6 +56,7 @@ function killVpn()
 
 function connectVPN($connection)
 {
+    killVpn(); // kill vpn if it happens to be running already
     echo 'Attempting to connect to ' . $connection[6] . ' - ' . $connection[1] . '...' . PHP_EOL;
     $configFile = '/tmp/' . uniqid($connection[6] . '_') . '.ovpn';
     file_put_contents($configFile, base64_decode($connection[14]));
