@@ -64,7 +64,7 @@ function connectVPN($connection)
 
     // Sleep a few seconds and compare current IP to the one from the VPN server
     sleep(15);
-    $ip = file_get_contents('http://icanhazip.com');
+    $ip = trim(file_get_contents('http://icanhazip.com'));
 
 
     if ($ip != $connection[1]) {
