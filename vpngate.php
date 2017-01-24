@@ -4,9 +4,7 @@
  *
  * Must be run as root.
  */
-if (PHP_OS != "Linux") {
-    exit("Only Linux is supported!");
-}
+checkRequirements();
 $options = getopt("c:s", ['country::', 'status::']);
 $country = $options['c'] ?? $options['country'] ?? null;
 $checkStatus = isset($options['status']) || isset($options['s']);
@@ -43,17 +41,30 @@ if ($start === true || in_array($start, ['y', 'yes'])) {
     }
 }
 
+/**
+ * Check to see if there is an instance of OpenVPN running
+ * @return bool
+ */
 function isVpnRunning()
 {
     exec("ps -aux | grep -i 'sudo openvpn --config' | grep -v grep | awk '{ print $2 }' | head -1", $pid);
     return !empty($pid);
 }
 
+/**
+ * Kill openvpn if it is running
+ */
 function killVpn()
 {
     exec('sudo killall openvpn');
 }
 
+/**
+ * Connect to VPN service.
+ * Writes openvpn config file to tmp directory and connects with it. Then verify connection by checking third party
+ * ip lookup service (icanhazip.com) against the connection config IP.
+ * @param $connection
+ */
 function connectVPN($connection)
 {
     killVpn(); // kill vpn if it happens to be running already
@@ -73,5 +84,24 @@ function connectVPN($connection)
     } else {
         echo "Connected to " . $connection[6] . ' - ' . $connection[1] . ' successfully.' . PHP_EOL;
         exit();
+    }
+}
+
+/**
+ * Make sure user is running Linux, root, and has OpenVPN installed
+ */
+function checkRequirements()
+{
+    if (PHP_OS != "Linux") {
+        exit("Only Linux is supported! Exiting!");
+    }
+
+    if (posix_getpwuid(posix_geteuid())['name'] != 'root') {
+        exit("Must run as root! Exiting!");
+    }
+
+    exec("dpkg-query -W -f='\${Status} \${Version}\n' openvpn", $result);
+    if (strpos($result[0], 'install ok installed') === false) {
+        exit("OpenVPN must be installed! Exiting!");
     }
 }
