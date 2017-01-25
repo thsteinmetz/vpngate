@@ -79,10 +79,10 @@ function connectVPN($connection)
 
 
     if ($ip != $connection[1]) {
-        echo "VPN did not connect to ' . $connection[6] . ' - ' . $connection[1] . ', moving to the next one..." . PHP_EOL;
+        echo 'VPN did not connect to ' . $connection[6] . ' - ' . $connection[1] . ', moving to the next one...' . PHP_EOL;
         killVpn();
     } else {
-        echo "Connected to " . $connection[6] . ' - ' . $connection[1] . ' successfully.' . PHP_EOL;
+        echo 'Connected to ' . $connection[6] . ' - ' . $connection[1] . ' successfully.' . PHP_EOL;
         exit();
     }
 }
