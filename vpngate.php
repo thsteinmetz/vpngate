@@ -56,7 +56,7 @@ function isVpnRunning()
  */
 function killVpn()
 {
-    exec('sudo killall openvpn');
+    if (isVpnRunning()) exec('sudo killall openvpn');
 }
 
 /**
